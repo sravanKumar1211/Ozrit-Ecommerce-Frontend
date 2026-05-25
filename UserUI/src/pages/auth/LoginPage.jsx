@@ -5,6 +5,7 @@ import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { loginUser } from "@/features/auth/authThunks";
 import { clearAuthError } from "@/features/auth/authSlice";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
   const dispatch = useAppDispatch();
@@ -27,7 +28,10 @@ const LoginPage = () => {
     event.preventDefault();
     const result = await dispatch(loginUser(form));
     if (loginUser.fulfilled.match(result)) {
+      toast.success("Logged in successfully");
       navigate(from, { replace: true });
+    } else {
+      toast.error(result.payload || result.error?.message || "Login failed");
     }
   };
 

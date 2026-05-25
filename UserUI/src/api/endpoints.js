@@ -34,6 +34,7 @@ export const endpoints = {
   },
   payment: {
     createOrder: "/payment/create-order",
+    verify: "/payment/verify",
     webhook: "/payment/webhook",
   },
   orders: {

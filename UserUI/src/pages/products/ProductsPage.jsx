@@ -8,6 +8,7 @@ import { fetchNavigation } from "@/features/categories/categoriesThunks";
 import { addItemToCart, fetchCart } from "@/features/cart/cartThunks";
 import { fetchProducts } from "@/features/products/productsThunks";
 import { fetchVariants } from "@/features/variants/variantsThunks";
+import toast from "react-hot-toast";
 import { productQueryFromSearchParams } from "@/utils/query";
 import ProductFilterPanel from "@/components/products/ProductFilterPanel";
 import ProductCard from "@/components/product/ProductCard";
@@ -86,8 +87,13 @@ const ProductsPage = () => {
       return;
     }
 
-    await dispatch(addItemToCart({ productVariantId: variantId, quantity: 1 }));
-    dispatch(fetchCart());
+    const result = await dispatch(addItemToCart({ productVariantId: variantId, quantity: 1 }));
+    if (addItemToCart.fulfilled.match(result)) {
+      toast.success("Product added to cart");
+      dispatch(fetchCart());
+    } else {
+      toast.error(result.payload || result.error?.message || "Failed to add to cart");
+    }
   };
 
   const pageCount = Math.max(Math.ceil(total / queryParams.limit), 1);

@@ -5,6 +5,7 @@ import { useAppSelector } from "@/hooks/useAppSelector";
 import { fetchCart, removeCartItem, updateCartItem } from "@/features/cart/cartThunks";
 import CartItemCard from "@/components/cart/CartItemCard";
 import LoadingState from "@/components/common/LoadingState";
+import toast from "react-hot-toast";
 
 const CartPage = () => {
   const dispatch = useAppDispatch();
@@ -20,13 +21,23 @@ const CartPage = () => {
     dispatch(fetchCart());
   }, [dispatch, isAuthenticated, navigate]);
 
-  const handleQuantityChange = (cartItemId, quantity) => {
+  const handleQuantityChange = async (cartItemId, quantity) => {
     if (quantity < 1) return;
-    dispatch(updateCartItem({ cartItemId, quantity }));
+    const result = await dispatch(updateCartItem({ cartItemId, quantity }));
+    if (updateCartItem.fulfilled.match(result)) {
+      toast.success("Cart quantity updated");
+    } else {
+      toast.error(result.payload || result.error?.message || "Failed to update quantity");
+    }
   };
 
-  const handleRemove = (cartItemId) => {
-    dispatch(removeCartItem(cartItemId));
+  const handleRemove = async (cartItemId) => {
+    const result = await dispatch(removeCartItem(cartItemId));
+    if (removeCartItem.fulfilled.match(result)) {
+      toast.success("Removed item from cart");
+    } else {
+      toast.error(result.payload || result.error?.message || "Failed to remove item");
+    }
   };
 
   return (

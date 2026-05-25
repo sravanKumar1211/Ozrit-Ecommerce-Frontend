@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { createOrderApi, createRazorpayOrderApi } from "./checkoutApi";
+import { createOrderApi, createRazorpayOrderApi, verifyRazorpayPaymentApi } from "./checkoutApi";
 
 export const createOrder = createAsyncThunk("checkout/createOrder", async (payload, { rejectWithValue }) => {
   try {
@@ -16,3 +16,14 @@ export const createRazorpayOrder = createAsyncThunk("checkout/createRazorpayOrde
     return rejectWithValue(error.response?.data?.message || "Failed to create razorpay order");
   }
 });
+
+export const verifyRazorpayPayment = createAsyncThunk(
+  "checkout/verifyRazorpayPayment",
+  async (payload, { rejectWithValue }) => {
+    try {
+      return await verifyRazorpayPaymentApi(payload);
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Payment verification failed");
+    }
+  },
+);

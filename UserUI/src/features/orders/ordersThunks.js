@@ -4,7 +4,7 @@ import { getMyOrdersApi, getOrderByIdApi, cancelOrderApi } from "./ordersApi";
 export const fetchMyOrders = createAsyncThunk("orders/fetchMyOrders", async (_, { rejectWithValue }) => {
   try {
     const res = await getMyOrdersApi();
-    return res.data || [];
+    return res.data?.orders || [];
   } catch (error) {
     return rejectWithValue(error.response?.data?.message || "Failed to fetch orders");
   }
@@ -13,7 +13,7 @@ export const fetchMyOrders = createAsyncThunk("orders/fetchMyOrders", async (_, 
 export const fetchOrderById = createAsyncThunk("orders/fetchOrderById", async (id, { rejectWithValue }) => {
   try {
     const res = await getOrderByIdApi(id);
-    return res.data || null;
+    return res.data?.order || null;
   } catch (error) {
     return rejectWithValue(error.response?.data?.message || "Failed to fetch order");
   }
@@ -23,6 +23,6 @@ export const cancelOrder = createAsyncThunk("orders/cancelOrder", async (id, { r
   try {
     return await cancelOrderApi(id);
   } catch (error) {
-    return rejectWithValue(error.response?.data?.message || "Failed to cancel order");
+    return rejectWithValue(error.response?.data || { message: "Failed to cancel order" });
   }
 });

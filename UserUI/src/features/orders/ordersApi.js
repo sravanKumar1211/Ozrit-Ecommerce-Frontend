@@ -17,7 +17,6 @@ export const getOrderByIdApi = async (id) => {
 };
 
 export const cancelOrderApi = async (id) => {
-  // Backend does not expose a direct user cancel endpoint; try best-effort
   const response = await api.put(endpoints.orders.cancel(id));
   return response.data;
 };

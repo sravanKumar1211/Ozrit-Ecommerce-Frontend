@@ -22,7 +22,7 @@ const OrderDetailsPage = () => {
       toast.success("Order cancelled");
       navigate('/orders');
     } else {
-      toast.error(res.payload?.message || res.error?.message || "Unable to cancel order");
+      toast.error(res.payload?.message || res.payload || res.error?.message || "Unable to cancel order");
     }
   };
 

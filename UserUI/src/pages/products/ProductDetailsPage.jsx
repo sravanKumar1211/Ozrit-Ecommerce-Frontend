@@ -3,9 +3,11 @@ import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { fetchProductDetails } from "@/features/productDetails/productDetailsThunks";
+import { fetchFeaturedProducts } from "@/features/products/productsThunks";
 import { clearProductDetails } from "@/features/productDetails/productDetailsSlice";
 import { addItemToCart, fetchCart } from "@/features/cart/cartThunks";
 import { fetchVariants } from "@/features/variants/variantsThunks";
+import toast from "react-hot-toast";
 import ProductCard from "@/components/product/ProductCard";
 import LoadingState from "@/components/common/LoadingState";
 import { getImageUrl } from "@/utils/image";
@@ -32,6 +34,7 @@ const ProductDetailsPage = () => {
   useEffect(() => {
     dispatch(fetchProductDetails(id));
     dispatch(fetchVariants({ productId: id, limit: 100 }));
+    dispatch(fetchFeaturedProducts());
     return () => {
       dispatch(clearProductDetails());
     };
@@ -48,8 +51,13 @@ const ProductDetailsPage = () => {
       return;
     }
 
-    await dispatch(addItemToCart({ productVariantId: selectedVariant.id, quantity }));
-    dispatch(fetchCart());
+    const result = await dispatch(addItemToCart({ productVariantId: selectedVariant.id, quantity }));
+    if (addItemToCart.fulfilled.match(result)) {
+      toast.success("Product added to cart");
+      dispatch(fetchCart());
+    } else {
+      toast.error(result.payload || result.error?.message || "Failed to add to cart");
+    }
   };
 
   if (productLoading || variantsLoading || !product) {

@@ -37,14 +37,15 @@ const orderSlice = createSlice({
       })
       .addCase(loadOrders.fulfilled, (state, action) => {
         state.loading = false;
-        state.orders = action.payload.data.orders;
+        state.orders = action.payload?.data?.orders || [];
       })
       .addCase(loadOrders.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
       .addCase(changeOrderStatus.fulfilled, (state, action) => {
-        const updatedOrder = action.payload.data.order;
+        const updatedOrder = action.payload?.data?.order;
+        if (!updatedOrder) return;
         state.orders = state.orders.map((order) =>
           order.id === updatedOrder.id ? updatedOrder : order,
         );

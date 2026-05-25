@@ -44,6 +44,13 @@ const slice = createSlice({
       })
       .addCase(cancelOrder.fulfilled, (state, action) => {
         state.loading = false;
+        const updated = action.payload?.data?.order;
+        if (updated) {
+          state.current = updated;
+          state.orders = state.orders.map((order) =>
+            order.id === updated.id ? updated : order,
+          );
+        }
       })
       .addCase(cancelOrder.rejected, (state, action) => {
         state.loading = false;
