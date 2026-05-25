@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -141,3 +142,23 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+=======
+# Node modules
+node_modules/
+**/node_modules/
+
+# Environment
+.env
+
+# macOS
+.DS_Store
+
+# Build / output
+dist/
+build/
+
+# VSCode
+.vscode/
+
+# Add any other remote project ignores below
+>>>>>>> 86e5530 (Add project files and ignore node_modules)
