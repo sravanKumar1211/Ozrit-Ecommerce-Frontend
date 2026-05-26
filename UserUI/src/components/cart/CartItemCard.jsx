@@ -1,62 +1,143 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { getImageUrl } from "@/utils/image";
 
 const CartItemCard = ({ item, loading, onQuantityChange, onRemove }) => {
   const variant = item.productVariant;
   const product = variant?.Product;
-  const imageSrc = variant?.image ? getImageUrl(variant.image) : getImageUrl(product?.thumbnail);
+  const imageSrc = variant?.image
+    ? getImageUrl(variant.image)
+    : product?.thumbnail
+      ? getImageUrl(product.thumbnail)
+      : null;
+
+  // Local quantity state so input feels responsive
+  const [localQty, setLocalQty] = useState(item.quantity);
+  const debounceRef = useRef(null);
+
+  // Sync if server updates quantity externally
+  useEffect(() => {
+    setLocalQty(item.quantity);
+  }, [item.quantity]);
+
+  const handleQtyChange = (value) => {
+    const qty = Math.max(1, Math.min(Number(value), variant?.stock ?? 99));
+    if (Number.isNaN(qty)) return;
+    setLocalQty(qty);
+    // Debounce the API call by 600ms
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      if (qty !== item.quantity) {
+        onQuantityChange(item.id, qty);
+      }
+    }, 600);
+  };
 
   const itemTotal = useMemo(() => {
     const price = parseFloat(variant?.price || 0);
-    return (price * (item.quantity || 1)).toFixed(2);
-  }, [item.quantity, variant]);
+    return (price * localQty).toFixed(2);
+  }, [localQty, variant?.price]);
 
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="grid gap-4 md:grid-cols-[120px_1fr_auto]">
-        <div className="aspect-square overflow-hidden rounded-3xl bg-slate-100">
+      <div className="grid gap-4 sm:grid-cols-[100px_1fr_auto]">
+        {/* Image */}
+        <div className="aspect-square overflow-hidden rounded-2xl bg-slate-100">
           {imageSrc ? (
-            <img src={imageSrc} alt={product?.name || variant?.sku} className="h-full w-full object-cover" />
+            <img
+              src={imageSrc}
+              alt={product?.name || variant?.sku}
+              className="h-full w-full object-cover"
+            />
           ) : (
-            <div className="flex h-full items-center justify-center text-sm text-slate-400">No image</div>
+            <div className="flex h-full items-center justify-center text-xs text-slate-400">
+              No image
+            </div>
           )}
         </div>
 
-        <div className="space-y-3">
+        {/* Details */}
+        <div className="space-y-2">
           <div>
-            <h3 className="text-lg font-semibold text-slate-950">{product?.name || "Product variant"}</h3>
-            <p className="text-sm text-slate-500">{variant?.color ? `${variant.color} / ${variant.size || "N/A"}` : "Variant details"}</p>
+            {product?.id && (
+              <Link
+                to={`/product/${product.id}`}
+                className="text-base font-semibold text-slate-950 hover:underline"
+              >
+                {product.name || "Product"}
+              </Link>
+            )}
+            {!product?.id && (
+              <p className="text-base font-semibold text-slate-950">Product variant</p>
+            )}
+            <p className="text-sm text-slate-500">
+              {[variant?.color, variant?.size].filter(Boolean).join(" / ") || "Variant"}
+            </p>
+            {variant?.sku && (
+              <p className="text-xs text-slate-400">SKU: {variant.sku}</p>
+            )}
           </div>
-          <div className="grid gap-2 sm:grid-cols-2">
-            <div className="rounded-2xl bg-slate-50 p-3 text-sm text-slate-600">
-              Price: <span className="font-semibold text-slate-900">${variant?.price?.toFixed(2) || "0.00"}</span>
-            </div>
-            <div className="rounded-2xl bg-slate-50 p-3 text-sm text-slate-600">
-              Stock: <span className="font-semibold text-slate-900">{variant?.stock ?? "N/A"}</span>
-            </div>
-          </div>
+
           <div className="flex flex-wrap items-center gap-3">
-            <label className="inline-flex items-center gap-2 text-sm text-slate-600">
-              Quantity
+            <div className="text-sm text-slate-600">
+              Unit price:{" "}
+              <span className="font-semibold text-slate-950">
+                ${Number(variant?.price || 0).toFixed(2)}
+              </span>
+            </div>
+            {variant?.stock !== undefined && (
+              <div className={`text-xs font-medium ${variant.stock === 0 ? "text-rose-500" : "text-emerald-600"}`}>
+                {variant.stock === 0 ? "Out of stock" : `${variant.stock} available`}
+              </div>
+            )}
+          </div>
+
+          {/* Quantity controls */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1 rounded-full border border-slate-200 px-1">
+              <button
+                type="button"
+                disabled={loading || localQty <= 1}
+                onClick={() => handleQtyChange(localQty - 1)}
+                className="flex h-7 w-7 items-center justify-center rounded-full text-slate-600 hover:bg-slate-100 disabled:opacity-40"
+              >
+                −
+              </button>
               <input
                 type="number"
                 min="1"
                 max={variant?.stock ?? 99}
-                value={item.quantity}
+                value={localQty}
                 disabled={loading}
-                onChange={(event) => onQuantityChange(item.id, Number(event.target.value))}
-                className="w-20 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none"
+                onChange={(e) => handleQtyChange(e.target.value)}
+                className="w-10 bg-transparent text-center text-sm font-semibold text-slate-950 outline-none"
               />
-            </label>
-            <button type="button" disabled={loading} onClick={() => onRemove(item.id)} className="rounded-full bg-rose-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-rose-600 disabled:opacity-60">
+              <button
+                type="button"
+                disabled={loading || localQty >= (variant?.stock ?? 99)}
+                onClick={() => handleQtyChange(localQty + 1)}
+                className="flex h-7 w-7 items-center justify-center rounded-full text-slate-600 hover:bg-slate-100 disabled:opacity-40"
+              >
+                +
+              </button>
+            </div>
+
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() => onRemove(item.id)}
+              className="rounded-full border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-50 disabled:opacity-50"
+            >
               Remove
             </button>
           </div>
         </div>
 
-        <div className="flex flex-col items-end justify-between gap-4">
-          <div className="rounded-3xl bg-slate-50 px-4 py-3 text-right text-sm text-slate-600">
-            Total <span className="block text-xl font-semibold text-slate-950">${itemTotal}</span>
+        {/* Line total */}
+        <div className="flex items-start justify-end">
+          <div className="rounded-2xl bg-slate-50 px-4 py-3 text-right">
+            <p className="text-xs text-slate-400">Total</p>
+            <p className="text-lg font-bold text-slate-950">${itemTotal}</p>
           </div>
         </div>
       </div>

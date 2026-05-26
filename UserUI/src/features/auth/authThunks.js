@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { loginApi, logoutApi, profileApi, registerApi } from "./authApi";
+import { loginApi, logoutApi, profileApi, registerApi, updateProfileApi } from "./authApi";
 
 export const loginUser = createAsyncThunk("auth/loginUser", async (credentials, { rejectWithValue }) => {
   try {
@@ -22,6 +22,14 @@ export const loadProfile = createAsyncThunk("auth/loadProfile", async (_, { reje
     return await profileApi();
   } catch (error) {
     return rejectWithValue(error.response?.data?.message || "Failed to load profile");
+  }
+});
+
+export const updateProfile = createAsyncThunk("auth/updateProfile", async (formData, { rejectWithValue }) => {
+  try {
+    return await updateProfileApi(formData);
+  } catch (error) {
+    return rejectWithValue(error.response?.data?.message || "Failed to update profile");
   }
 });
 

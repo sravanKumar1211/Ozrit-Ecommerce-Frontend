@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getToken, removeToken, setToken } from "@/utils/token";
-import { loadProfile, loginUser, logoutUser, registerUser } from "./authThunks";
+import { loadProfile, loginUser, logoutUser, registerUser, updateProfile } from "./authThunks";
+import { fetchUserProfile, updateUserProfile } from "@/features/profile/profileThunks";
 
 const initialState = {
   user: null,
@@ -65,9 +66,31 @@ const authSlice = createSlice({
         state.token = null;
         state.isAuthenticated = false;
         removeToken();
+      })
+      .addCase(updateProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        // Backend: { success, message, user }
+        state.user = action.payload.user || state.user;
+      })
+      .addCase(updateProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Sync with profile thunks
+      .addCase(fetchUserProfile.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.isAuthenticated = true;
+      })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.user = action.payload;
       });
   },
 });
 
 export const { clearAuthError } = authSlice.actions;
 export default authSlice.reducer;
+

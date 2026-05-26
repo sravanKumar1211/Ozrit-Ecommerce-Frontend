@@ -9,6 +9,7 @@ import variantsReducer from "@/features/variants/variantsSlice";
 import checkoutReducer from "@/features/checkout/checkoutSlice";
 import couponsReducer from "@/features/coupons/couponsSlice";
 import ordersReducer from "@/features/orders/ordersSlice";
+import profileReducer from "@/features/profile/profileSlice";
 
 export const store = configureStore({
   reducer: {
@@ -22,5 +23,7 @@ export const store = configureStore({
     checkout: checkoutReducer,
     coupons: couponsReducer,
     orders: ordersReducer,
+    profile: profileReducer,
   },
 });
+

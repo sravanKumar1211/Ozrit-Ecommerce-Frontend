@@ -20,8 +20,11 @@ const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchNavigation());
-  }, [dispatch]);
+    // Only fetch if not already loaded
+    if (!categories.length) {
+      dispatch(fetchNavigation());
+    }
+  }, [dispatch, categories.length]);
 
   useEffect(() => {
     if (token) {
@@ -72,18 +75,40 @@ const Header = () => {
             <Badge badgeContent={count} color="primary">
               <Link to="/cart" className="text-sm font-semibold text-slate-700">Cart</Link>
             </Badge>
-            <Link to="/products" className="rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
+            <Link to="/products" className="rounded-full bg-slate-500 px-5 py-3 text-sm font-semibold text-white-1000
+            transition hover:bg-slate-600">
               Shop now
             </Link>
             {isAuthenticated ? (
               <>
-                <button
+                {/* <button
                   type="button"
                   onClick={(event) => setAnchorEl(event.currentTarget)}
                   className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
                 >
                   {user?.name || "Profile"}
-                </button>
+                </button> */}
+
+                  <button
+  type="button"
+  onClick={(event) => setAnchorEl(event.currentTarget)}
+  className="flex items-center gap-2 rounded-full border border-slate-200 px-2 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+>
+  {user?.profileImage ? (
+    <img
+      src={user.profileImage}
+      alt={user?.name}
+      className="h-8 w-8 rounded-full object-cover"
+    />
+  ) : (
+    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-xs font-bold text-slate-700">
+      {user?.name?.charAt(0)?.toUpperCase() || "U"}
+    </div>
+  )}
+
+  <span>{user?.name || "Profile"}</span>
+</button>
+
                 <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
                   <MenuItem component={Link} to="/profile" onClick={() => setAnchorEl(null)}>Profile</MenuItem>
                   <MenuItem component={Link} to="/orders" onClick={() => setAnchorEl(null)}>Orders</MenuItem>

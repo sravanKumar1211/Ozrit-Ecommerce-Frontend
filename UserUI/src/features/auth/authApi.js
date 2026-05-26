@@ -20,3 +20,10 @@ export const logoutApi = async () => {
   const response = await api.post(endpoints.auth.logout);
   return response.data;
 };
+
+export const updateProfileApi = async (formData) => {
+  const response = await api.put(endpoints.auth.profile, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return response.data;
+};

@@ -1,10 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchFeaturedProducts, fetchProductDetails, fetchProducts } from "./productsThunks";
+import { fetchFeaturedProducts, fetchProducts } from "./productsThunks";
 
 const initialState = {
   products: [],
   featured: [],
-  currentProduct: null,
   total: 0,
   page: 1,
   limit: 12,
@@ -16,11 +15,7 @@ const initialState = {
 const productsSlice = createSlice({
   name: "products",
   initialState,
-  reducers: {
-    clearCurrentProduct: (state) => {
-      state.currentProduct = null;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchProducts.pending, (state) => {
@@ -48,12 +43,8 @@ const productsSlice = createSlice({
       .addCase(fetchFeaturedProducts.rejected, (state, action) => {
         state.featuredLoading = false;
         state.error = action.payload;
-      })
-      .addCase(fetchProductDetails.fulfilled, (state, action) => {
-        state.currentProduct = action.payload.product;
       });
   },
 });
 
-export const { clearCurrentProduct } = productsSlice.actions;
 export default productsSlice.reducer;
