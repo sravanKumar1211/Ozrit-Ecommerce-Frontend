@@ -46,8 +46,12 @@ const orderSlice = createSlice({
       .addCase(changeOrderStatus.fulfilled, (state, action) => {
         const updatedOrder = action.payload?.data?.order;
         if (!updatedOrder) return;
+        // Merge rather than replace — preserves nested User/OrderItems associations
+        // that may not be returned by a partial update response
         state.orders = state.orders.map((order) =>
-          order.id === updatedOrder.id ? updatedOrder : order,
+          order.id === updatedOrder.id
+            ? { ...order, ...updatedOrder }
+            : order,
         );
       });
   },

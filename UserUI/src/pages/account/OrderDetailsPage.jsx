@@ -3,6 +3,8 @@ import { Link, useParams } from "react-router-dom";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { fetchOrderById, cancelOrder } from "@/features/orders/ordersThunks";
+import { createRazorpayOrder, verifyRazorpayPayment } from "@/features/checkout/checkoutThunks";
+import { waitForRazorpay } from "@/utils/razorpay";
 import { getImageUrl } from "@/utils/image";
 import LoadingState from "@/components/common/LoadingState";
 import toast from "react-hot-toast";
@@ -37,8 +39,84 @@ const OrderDetailsPage = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const { current, loading } = useAppSelector((s) => s.orders);
+  const { user } = useAppSelector((s) => s.auth);
   const [cancelling, setCancelling] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [paying, setPaying] = useState(false);
+
+  const handlePayNow = async () => {
+    setPaying(true);
+    try {
+      const razorRes = await dispatch(createRazorpayOrder({ orderId: current.id }));
+      if (!createRazorpayOrder.fulfilled.match(razorRes)) {
+        toast.error(razorRes.payload || "Failed to initiate payment");
+        setPaying(false);
+        return;
+      }
+
+      const razorpayData = razorRes.payload.data;
+      let RazorpayClass;
+      try {
+        RazorpayClass = await waitForRazorpay();
+      } catch {
+        toast.error("Payment gateway unavailable. Please try again later.");
+        setPaying(false);
+        return;
+      }
+
+      const key = razorpayData.key || import.meta.env.VITE_RAZORPAY_KEY_ID;
+      const rzpOrder = razorpayData.razorpayOrder;
+
+      const options = {
+        key,
+        amount: rzpOrder.amount,
+        currency: rzpOrder.currency || "INR",
+        name: "Ozrit Shop",
+        description: `Order #${current.id}`,
+        order_id: rzpOrder.id,
+        handler: async (response) => {
+          const verifyRes = await dispatch(
+            verifyRazorpayPayment({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            }),
+          );
+
+          if (verifyRazorpayPayment.fulfilled.match(verifyRes)) {
+            toast.success("Payment completed successfully! 🎉");
+            dispatch(fetchOrderById(current.id));
+          } else {
+            toast.error(verifyRes.payload || "Payment verification failed");
+          }
+          setPaying(false);
+        },
+        prefill: {
+          name: user?.name || "",
+          email: user?.email || "",
+          contact: user?.phone || "",
+        },
+        theme: { color: "#0f172a" },
+        modal: {
+          ondismiss: () => {
+            toast.error("Payment cancelled");
+            setPaying(false);
+          },
+        },
+      };
+
+      const rzp = new RazorpayClass(options);
+      rzp.on("payment.failed", (response) => {
+        toast.error(response?.error?.description || "Payment failed");
+        setPaying(false);
+      });
+      rzp.open();
+    } catch (err) {
+      console.error("Pay now handler error:", err);
+      toast.error("Something went wrong. Please try again.");
+      setPaying(false);
+    }
+  };
 
   useEffect(() => {
     dispatch(fetchOrderById(id));
@@ -261,6 +339,16 @@ const shippingAddress = (() => {
                 </div>
               )}
             </div>
+            {(current.paymentStatus === "pending" || current.paymentStatus === "failed") && current.orderStatus !== "cancelled" && (
+              <button
+                type="button"
+                onClick={handlePayNow}
+                disabled={paying}
+                className="mt-4 w-full rounded-full bg-emerald-600 py-2.5 text-xs font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-50"
+              >
+                {paying ? "Opening Gateway..." : "Pay Now"}
+              </button>
+            )}
           </div>
 
           {/* Address */}

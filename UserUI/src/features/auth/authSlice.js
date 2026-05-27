@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getToken, removeToken, setToken } from "@/utils/token";
-import { loadProfile, loginUser, logoutUser, registerUser, updateProfile } from "./authThunks";
+import { loadProfile, loginUser, logoutUser, registerUser, updateProfile, verifyOtp, resendOtp } from "./authThunks";
 import { fetchUserProfile, updateUserProfile } from "@/features/profile/profileThunks";
 
 const initialState = {
@@ -34,7 +34,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = typeof action.payload === "object" ? action.payload.message : action.payload;
       })
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
@@ -42,12 +42,34 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
+        if (action.payload.requiresVerification) {
+          state.user = null;
+          state.token = null;
+          state.isAuthenticated = false;
+          removeToken();
+          return;
+        }
         state.user = action.payload.user;
         state.token = action.payload.token;
         state.isAuthenticated = true;
         setToken(action.payload.token);
       })
       .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(verifyOtp.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(verifyOtp.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+        state.isAuthenticated = true;
+        setToken(action.payload.token);
+      })
+      .addCase(verifyOtp.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

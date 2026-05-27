@@ -5,6 +5,7 @@ import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { clearAuthError } from "@/features/auth/authSlice";
 import { registerUser } from "@/features/auth/authThunks";
+import toast from "react-hot-toast";
 
 const RegisterPage = () => {
   const dispatch = useAppDispatch();
@@ -29,7 +30,15 @@ const RegisterPage = () => {
     event.preventDefault();
     const result = await dispatch(registerUser(form));
     if (registerUser.fulfilled.match(result)) {
-      navigate("/", { replace: true });
+      if (result.payload?.requiresVerification) {
+        toast.success("Account created! Please verify your email with the 6-digit code sent.");
+        navigate(`/verify-email?email=${encodeURIComponent(form.email)}`, { replace: true });
+      } else {
+        toast.success("Account created successfully!");
+        navigate("/", { replace: true });
+      }
+    } else {
+      toast.error(result.payload || "Registration failed");
     }
   };
 

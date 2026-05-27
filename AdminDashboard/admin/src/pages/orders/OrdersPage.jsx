@@ -44,6 +44,7 @@ const OrdersPage = () => {
                 <th className="px-4 py-4">Order</th>
                 <th className="px-4 py-4">Customer</th>
                 <th className="px-4 py-4">Amount</th>
+                <th className="px-4 py-4">Payment</th>
                 <th className="px-4 py-4">Status</th>
                 <th className="px-4 py-4">Actions</th>
               </tr>
@@ -54,6 +55,20 @@ const OrdersPage = () => {
                   <td className="px-4 py-4">#{order.id}</td>
                   <td className="px-4 py-4">{order.User?.name || "Guest"}</td>
                   <td className="px-4 py-4">{formatCurrency(order.finalAmount)}</td>
+                  <td className="px-4 py-4">
+                    <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase border ${
+                      order.paymentStatus === "paid"
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                        : order.paymentStatus === "failed"
+                        ? "bg-rose-50 text-rose-700 border-rose-200"
+                        : "bg-amber-50 text-amber-700 border-amber-200"
+                    }`}>
+                      {order.paymentStatus || "pending"}
+                    </span>
+                    <span className="block text-[10px] text-slate-400 font-semibold uppercase mt-0.5">
+                      {order.paymentMethod || "Razorpay"}
+                    </span>
+                  </td>
                   <td className="px-4 py-4">
                     <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${ORDER_STATUS.find((status) => status.value === order.orderStatus)?.color || "bg-slate-100 text-slate-700"}`}>
                       {order.orderStatus}
@@ -80,7 +95,7 @@ const OrdersPage = () => {
               ))}
               {!orders?.length && (
                 <tr>
-                  <td colSpan="5" className="px-4 py-10 text-center text-slate-500">No orders found.</td>
+                  <td colSpan="6" className="px-4 py-10 text-center text-slate-500">No orders found.</td>
                 </tr>
               )}
             </tbody>

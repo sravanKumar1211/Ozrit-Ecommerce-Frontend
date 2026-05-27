@@ -146,58 +146,9 @@ const CheckoutPage = () => {
             return;
           }
 
-          // Signature verified! Now poll for payment status (via webhook)
-          toast.success("Payment processing...");
-
-          // Poll order status for up to 30 seconds
-          const maxAttempts = 15; // 30 seconds / 2 seconds per poll
-          let attempts = 0;
-
-          const pollPaymentStatus = async () => {
-            try {
-              // Fetch current order to check if webhook updated status
-              const orderRes = await dispatch(fetchOrderById(ecommerceOrderId));
-
-              if (fetchOrderById.fulfilled.match(orderRes)) {
-                const order = orderRes.payload;
-                // if (order?.paymentStatus === "paid") {
-                //   toast.success("Payment successful!");
-                //   resolve({ success: true });
-                //   return;
-                // }
-                if (order?.paymentStatus === "paid") {
-                  toast.success("Order placed successfully 🎉");
-
-                  resolve({
-                    success: true,
-                    order,
-                  });
-
-                  return;
-                }
-              }
-
-              attempts++;
-              if (attempts < maxAttempts) {
-                setTimeout(pollPaymentStatus, 2000); // Poll every 2 seconds
-              } else {
-                // Timeout: webhook may still be processing
-                toast("Confirming payment... Check your Orders page.", {
-                  icon: "ℹ️",
-                });
-                resolve({ success: false, timeout: true });
-              }
-            } catch (error) {
-              attempts++;
-              if (attempts < maxAttempts) {
-                setTimeout(pollPaymentStatus, 2000);
-              } else {
-                resolve({ success: false, timeout: true });
-              }
-            }
-          };
-
-          pollPaymentStatus();
+          // Synchronous signature verified successfully!
+          toast.success("Order placed successfully 🎉");
+          resolve({ success: true });
         },
         prefill: {
           name: user?.name || "",

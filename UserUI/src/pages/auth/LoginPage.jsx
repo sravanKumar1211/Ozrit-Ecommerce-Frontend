@@ -31,7 +31,12 @@ const LoginPage = () => {
       toast.success("Logged in successfully");
       navigate(from, { replace: true });
     } else {
-      toast.error(result.payload || result.error?.message || "Login failed");
+      if (result.payload && typeof result.payload === "object" && result.payload.requiresVerification) {
+        toast.error(result.payload.message || "Email verification required");
+        navigate(`/verify-email?email=${encodeURIComponent(result.payload.email)}`, { replace: true });
+      } else {
+        toast.error(typeof result.payload === "string" ? result.payload : result.error?.message || "Login failed");
+      }
     }
   };
 

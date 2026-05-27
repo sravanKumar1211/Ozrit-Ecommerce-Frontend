@@ -35,7 +35,7 @@ const OrderDetailsPage = () => {
           <p className="text-sm text-slate-500">Created on {formatDate(order.createdAt)}</p>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-6 lg:grid-cols-3">
           <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
             <h2 className="text-lg font-semibold text-slate-900">Customer</h2>
             <p className="mt-3 text-sm text-slate-700">{order.User?.name || "Guest"}</p>
@@ -47,6 +47,26 @@ const OrderDetailsPage = () => {
               <p>Total amount: {formatCurrency(order.totalAmount)}</p>
               <p>Discount: {formatCurrency(order.discountAmount)}</p>
               <p className="font-semibold">Final total: {formatCurrency(order.finalAmount)}</p>
+            </div>
+          </div>
+          <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
+            <h2 className="text-lg font-semibold text-slate-900">Payment details</h2>
+            <div className="mt-3 space-y-2 text-sm text-slate-700">
+              <div>
+                Status:{" "}
+                <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase border ${
+                  order.paymentStatus === "paid"
+                    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                    : order.paymentStatus === "failed"
+                    ? "bg-rose-50 text-rose-700 border-rose-200"
+                    : "bg-amber-50 text-amber-700 border-amber-200"
+                }`}>
+                  {order.paymentStatus || "pending"}
+                </span>
+              </div>
+              <p>Method: <span className="font-semibold uppercase">{order.paymentMethod || "Razorpay"}</span></p>
+              {order.razorpayPaymentId && <p className="truncate">Transaction ID: <span className="font-mono text-xs text-slate-500">{order.razorpayPaymentId}</span></p>}
+              {order.paidAt && <p>Paid On: <span className="font-semibold text-xs">{new Date(order.paidAt).toLocaleString("en-IN")}</span></p>}
             </div>
           </div>
         </div>

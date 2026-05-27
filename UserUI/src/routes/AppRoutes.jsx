@@ -12,6 +12,7 @@ import ProfilePage from "@/pages/account/ProfilePage";
 import AddressPage from "@/pages/account/AddressPage";
 import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage";
+import VerifyEmailPage from "@/pages/auth/VerifyEmailPage";
 import NotFoundPage from "@/pages/NotFoundPage";
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -73,6 +74,7 @@ const AppRoutes = () => (
         />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
+        <Route path="verify-email" element={<VerifyEmailPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

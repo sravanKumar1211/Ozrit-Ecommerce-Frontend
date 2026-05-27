@@ -27,3 +27,13 @@ export const updateProfileApi = async (formData) => {
   });
   return response.data;
 };
+
+export const verifyOtpApi = async (payload) => {
+  const response = await api.post("/verify-otp", payload);
+  return response.data;
+};
+
+export const resendOtpApi = async (payload) => {
+  const response = await api.post("/resend-otp", payload);
+  return response.data;
+};
