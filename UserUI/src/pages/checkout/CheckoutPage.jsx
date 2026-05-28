@@ -245,9 +245,7 @@ const CheckoutPage = () => {
         }, 1000);
         return;
       }
-    // if (result?.success) {
-    //   navigate(`/orders/${order.id}`);
-    // } 
+    
     else if (!result?.dismissed) {
       navigate(`/orders/${order.id}`);
     } else {

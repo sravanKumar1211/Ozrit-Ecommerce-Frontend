@@ -33,12 +33,14 @@ const Header = () => {
     }
   }, [dispatch, token]);
 
-  const visibleCategories = useMemo(() => categories.slice(0, 5), [categories]);
+  const visibleCategories = useMemo(() => categories.slice(0, 10), [categories]);
 
   const handleSearch = (event) => {
     event.preventDefault();
     const query = search.trim();
-    navigate(query ? `/products?search=${encodeURIComponent(query)}` : "/products");
+    navigate(
+      query ? `/products?search=${encodeURIComponent(query)}` : "/products",
+    );
     setMobileOpen(false);
   };
 
@@ -55,7 +57,12 @@ const Header = () => {
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex min-h-20 items-center justify-between gap-4">
-          <Link to="/" className="text-2xl font-bold tracking-tight text-slate-950">Ozrit Shop</Link>
+          <Link
+            to="/"
+            className="text-2xl font-bold tracking-tight text-slate-950"
+          >
+            Ozrit Shop
+          </Link>
 
           <form onSubmit={handleSearch} className="hidden flex-1 md:block">
             <div className="mx-auto flex max-w-xl overflow-hidden rounded-full border border-slate-200 bg-slate-50 focus-within:border-slate-400">
@@ -65,7 +72,10 @@ const Header = () => {
                 placeholder="Search category, subcategory, brand or product"
                 className="min-w-0 flex-1 bg-transparent px-5 py-3 text-sm text-slate-900 outline-none"
               />
-              <button type="submit" className="bg-slate-950 px-5 text-sm font-semibold text-white transition hover:bg-slate-800">
+              <button
+                type="submit"
+                className="bg-slate-950 px-5 text-sm font-semibold text-white transition hover:bg-slate-800"
+              >
                 Search
               </button>
             </div>
@@ -73,53 +83,80 @@ const Header = () => {
 
           <div className="hidden items-center gap-4 lg:flex">
             <Badge badgeContent={count} color="primary">
-              <Link to="/cart" className="text-sm font-semibold text-slate-700">Cart</Link>
+              <Link to="/cart" className="text-sm font-semibold text-slate-700">
+                Cart
+              </Link>
             </Badge>
-            <Link to="/products" className="rounded-full bg-slate-500 px-5 py-3 text-sm font-semibold text-white-1000
-            transition hover:bg-slate-600">
+            <Link
+              to="/products"
+              className="rounded-full bg-slate-500 px-5 py-3 text-sm font-semibold text-white-1000
+            transition hover:bg-slate-600"
+            >
               Shop now
             </Link>
             {isAuthenticated ? (
               <>
-                {/* <button
+                <button
                   type="button"
                   onClick={(event) => setAnchorEl(event.currentTarget)}
-                  className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                  className="flex items-center gap-2 rounded-full border border-slate-200 px-2 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
                 >
-                  {user?.name || "Profile"}
-                </button> */}
+                  {user?.profileImage ? (
+                    <img
+                      src={user.profileImage}
+                      alt={user?.name}
+                      className="h-8 w-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-xs font-bold text-slate-700">
+                      {user?.name?.charAt(0)?.toUpperCase() || "U"}
+                    </div>
+                  )}
 
-                  <button
-  type="button"
-  onClick={(event) => setAnchorEl(event.currentTarget)}
-  className="flex items-center gap-2 rounded-full border border-slate-200 px-2 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
->
-  {user?.profileImage ? (
-    <img
-      src={user.profileImage}
-      alt={user?.name}
-      className="h-8 w-8 rounded-full object-cover"
-    />
-  ) : (
-    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-xs font-bold text-slate-700">
-      {user?.name?.charAt(0)?.toUpperCase() || "U"}
-    </div>
-  )}
+                  <span>{user?.name || "Profile"}</span>
+                </button>
 
-  <span>{user?.name || "Profile"}</span>
-</button>
-
-                <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
-                  <MenuItem component={Link} to="/profile" onClick={() => setAnchorEl(null)}>Profile</MenuItem>
-                  <MenuItem component={Link} to="/orders" onClick={() => setAnchorEl(null)}>Orders</MenuItem>
-                  <MenuItem component={Link} to="/address" onClick={() => setAnchorEl(null)}>Address</MenuItem>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={() => setAnchorEl(null)}
+                >
+                  <MenuItem
+                    component={Link}
+                    to="/profile"
+                    onClick={() => setAnchorEl(null)}
+                  >
+                    Profile
+                  </MenuItem>
+                  <MenuItem
+                    component={Link}
+                    to="/orders"
+                    onClick={() => setAnchorEl(null)}
+                  >
+                    Orders
+                  </MenuItem>
+                  <MenuItem
+                    component={Link}
+                    to="/address"
+                    onClick={() => setAnchorEl(null)}
+                  >
+                    Address
+                  </MenuItem>
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
               </>
             ) : (
               <div className="flex items-center gap-2">
-                <Link to="/login" className="text-sm font-semibold text-slate-700 hover:text-slate-950">Login</Link>
-                <Link to="/register" className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                <Link
+                  to="/login"
+                  className="text-sm font-semibold text-slate-700 hover:text-slate-950"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                >
                   Register
                 </Link>
               </div>
@@ -136,9 +173,15 @@ const Header = () => {
         </div>
 
         <nav className="hidden items-center gap-6 border-t border-slate-100 py-3 lg:flex">
-          <NavLink to="/products" className={navClass}>All Products</NavLink>
+          <NavLink to="/products" className={navClass}>
+            All Products
+          </NavLink>
           {visibleCategories.map((category) => (
-            <NavLink key={category.id} to={`/products?category=${category.id}`} className={navClass}>
+            <NavLink
+              key={category.id}
+              to={`/products?category=${category.id}`}
+              className={navClass}
+            >
               {category.name}
             </NavLink>
           ))}
@@ -146,31 +189,57 @@ const Header = () => {
 
         {mobileOpen && (
           <div className="space-y-4 border-t border-slate-100 py-4 lg:hidden">
-            <form onSubmit={handleSearch} className="flex overflow-hidden rounded-full border border-slate-200 bg-slate-50">
+            <form
+              onSubmit={handleSearch}
+              className="flex overflow-hidden rounded-full border border-slate-200 bg-slate-50"
+            >
               <input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search products"
                 className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm outline-none"
               />
-              <button type="submit" className="bg-slate-950 px-4 text-sm font-semibold text-white">Go</button>
+              <button
+                type="submit"
+                className="bg-slate-950 px-4 text-sm font-semibold text-white"
+              >
+                Go
+              </button>
             </form>
             <div className="grid gap-3 text-sm font-medium text-slate-600">
-              <Link to="/products" onClick={() => setMobileOpen(false)}>All Products</Link>
+              <Link to="/products" onClick={() => setMobileOpen(false)}>
+                All Products
+              </Link>
               {visibleCategories.map((category) => (
-                <Link key={category.id} to={`/products?category=${category.id}`} onClick={() => setMobileOpen(false)}>
+                <Link
+                  key={category.id}
+                  to={`/products?category=${category.id}`}
+                  onClick={() => setMobileOpen(false)}
+                >
                   {category.name}
                 </Link>
               ))}
               {isAuthenticated ? (
                 <>
-                  <Link to="/profile" onClick={() => setMobileOpen(false)}>Profile</Link>
-                  <button type="button" onClick={handleLogout} className="text-left font-medium">Logout</button>
+                  <Link to="/profile" onClick={() => setMobileOpen(false)}>
+                    Profile
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="text-left font-medium"
+                  >
+                    Logout
+                  </button>
                 </>
               ) : (
                 <>
-                  <Link to="/login" onClick={() => setMobileOpen(false)}>Login</Link>
-                  <Link to="/register" onClick={() => setMobileOpen(false)}>Register</Link>
+                  <Link to="/login" onClick={() => setMobileOpen(false)}>
+                    Login
+                  </Link>
+                  <Link to="/register" onClick={() => setMobileOpen(false)}>
+                    Register
+                  </Link>
                 </>
               )}
             </div>

@@ -24,22 +24,8 @@ const AppRoutes = () => (
         <Route path="products" element={<ProductsPage />} />
         <Route path="product/:id" element={<ProductDetailsPage />} />
         <Route path="product/:id/variants" element={<ProductVariantPage />} />
-        <Route
-          path="cart"
-          element={
-            <ProtectedRoute>
-              <CartPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="checkout"
-          element={
-            <ProtectedRoute>
-              <CheckoutPage />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>}/>
+        <Route path="checkout" element={ <ProtectedRoute><CheckoutPage /></ProtectedRoute>}/>
         <Route
           path="profile"
           element={

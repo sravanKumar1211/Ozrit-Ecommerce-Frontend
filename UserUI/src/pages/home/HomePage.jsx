@@ -2,15 +2,11 @@ import { useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
-
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
-
 import { fetchNavigation } from "@/features/categories/categoriesThunks";
 import { fetchFeaturedProducts } from "@/features/products/productsThunks";
-
 import { getImageUrl } from "@/utils/image";
-
 import CategorySidebar from "@/components/navigation/CategorySidebar";
 import ProductSlider from "@/components/product/ProductSlider";
 import SectionHeader from "@/components/common/SectionHeader";
@@ -46,23 +42,17 @@ const HomePage = () => {
 
     featured.forEach((product) => {
       const key = product.Category?.id ? String(product.Category.id) : null;
-
       if (!key) return;
-
       const label = product.Category?.name || "Featured";
-
       const existing = groups.get(key) || {
         label,
         products: [],
       };
-
       if (existing.products.length < 8) {
         existing.products.push(product);
       }
-
       groups.set(key, existing);
     });
-
     return Array.from(groups.entries()).slice(0, 4);
   }, [featured]);
 
