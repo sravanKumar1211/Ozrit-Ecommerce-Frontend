@@ -87,7 +87,7 @@ const AddVariantPage = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Base Variant Price ($)</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Base Variant Price (₹)</label>
               <input type="number" step="0.01" name="price" value={form.price} onChange={handleChange} required placeholder="0.00" className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-slate-400" />
             </div>
             <div>
