@@ -82,7 +82,7 @@ const CartItemCard = ({ item, loading, onQuantityChange, onRemove }) => {
             <div className="text-sm text-slate-600">
               Unit price:{" "}
               <span className="font-semibold text-slate-950">
-                ${Number(variant?.price || 0).toFixed(2)}
+                ₹{Number(variant?.price || 0).toFixed(2)}
               </span>
             </div>
             {variant?.stock !== undefined && (
@@ -137,7 +137,7 @@ const CartItemCard = ({ item, loading, onQuantityChange, onRemove }) => {
         <div className="flex items-start justify-end">
           <div className="rounded-2xl bg-slate-50 px-4 py-3 text-right">
             <p className="text-xs text-slate-400">Total</p>
-            <p className="text-lg font-bold text-slate-950">${itemTotal}</p>
+            <p className="text-lg font-bold text-slate-950">₹{itemTotal}</p>
           </div>
         </div>
       </div>

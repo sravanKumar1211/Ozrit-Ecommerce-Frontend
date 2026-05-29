@@ -161,7 +161,7 @@ const ProductVariantPage = () => {
                           )}
                         </div>
                         <span className="text-lg font-bold text-slate-950">
-                          ${Number(variant.price).toFixed(2)}
+                          ₹{Number(variant.price).toFixed(2)}
                         </span>
                       </div>
 

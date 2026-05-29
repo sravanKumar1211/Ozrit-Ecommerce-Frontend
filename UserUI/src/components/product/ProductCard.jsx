@@ -4,7 +4,7 @@ import { getImageUrl } from "@/utils/image";
 const ProductCard = ({ product, variant, onAddToCart }) => {
   const hasVariant = Boolean(variant);
   const inStock = hasVariant && variant.stock > 0;
-  const price = hasVariant ? `$${Number(variant.price).toFixed(2)}` : null;
+  const price = hasVariant ? `₹${Number(variant.price).toFixed(2)}` : null;
 
   return (
     <div className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">

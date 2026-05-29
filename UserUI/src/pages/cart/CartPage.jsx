@@ -101,19 +101,19 @@ const CartPage = () => {
             <div className="flex justify-between text-slate-600">
               <span>Subtotal</span>
               <span className="font-semibold text-slate-950">
-                ${Number(subtotal).toFixed(2)}
+                ₹{Number(subtotal).toFixed(2)}
               </span>
             </div>
             <div className="flex justify-between text-slate-600">
               <span>Tax (10%)</span>
               <span className="font-semibold text-slate-950">
-                ${Number(tax).toFixed(2)}
+                ₹{Number(tax).toFixed(2)}
               </span>
             </div>
             <div className="flex justify-between border-t border-slate-200 pt-3 text-base">
               <span className="font-semibold text-slate-950">Total</span>
               <span className="font-bold text-slate-950">
-                ${Number(grandTotal).toFixed(2)}
+                ₹{Number(grandTotal).toFixed(2)}
               </span>
             </div>
           </div>

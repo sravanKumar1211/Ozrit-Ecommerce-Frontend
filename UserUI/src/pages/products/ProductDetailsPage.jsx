@@ -250,7 +250,7 @@ const ProductDetailsPage = () => {
                         </p>
                       </div>
                       <span className={`ml-auto text-sm font-semibold ${isSelected ? "text-white" : "text-slate-950"}`}>
-                        ${Number(variant.price).toFixed(2)}
+                        ₹{Number(variant.price).toFixed(2)}
                       </span>
                     </button>
                   );
@@ -272,7 +272,7 @@ const ProductDetailsPage = () => {
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <span className="text-slate-500">Price</span>
                 <span className="text-xl font-bold text-slate-950">
-                  {selectedVariant ? `$${Number(selectedVariant.price).toFixed(2)}` : "—"}
+                  {selectedVariant ? `₹${Number(selectedVariant.price).toFixed(2)}` : "—"}
                 </span>
               </div>
 
@@ -302,7 +302,7 @@ const ProductDetailsPage = () => {
                 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                   <span className="text-slate-500">Subtotal</span>
                   <span className="font-semibold text-slate-950">
-                    ${(Number(selectedVariant.price) * quantity).toFixed(2)}
+                    ₹{(Number(selectedVariant.price) * quantity).toFixed(2)}
                   </span>
                 </div>
               )}
