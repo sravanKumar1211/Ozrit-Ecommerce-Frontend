@@ -11,6 +11,7 @@ import OrderDetailsPage from "@/pages/orders/OrderDetailsPage";
 import CustomersPage from "@/pages/users/CustomersPage";
 import CouponsPage from "@/pages/coupons/CouponsPage";
 import ProfilePage from "@/pages/profile/ProfilePage";
+import AdminChatPage from "@/pages/chat/AdminChatPage";
 import NotFoundPage from "@/pages/NotFoundPage";
 
 import ProtectedRoute from "@/routes/ProtectedRoute";
@@ -48,6 +49,7 @@ const AppRoutes = () => (
         <Route path="orders/:id" element={<OrderDetailsPage />} />
         <Route path="customers" element={<CustomersPage />} />
         <Route path="coupons" element={<CouponsPage />} />
+        <Route path="chat" element={<AdminChatPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="*" element={<NotFoundPage />} />
         <Route path="subcategories" element={<SubCategoriesPage />} />

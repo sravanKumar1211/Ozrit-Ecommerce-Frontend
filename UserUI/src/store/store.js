@@ -10,6 +10,7 @@ import checkoutReducer from "@/features/checkout/checkoutSlice";
 import couponsReducer from "@/features/coupons/couponsSlice";
 import ordersReducer from "@/features/orders/ordersSlice";
 import profileReducer from "@/features/profile/profileSlice";
+import chatReducer from "@/features/chat/chatSlice";
 
 export const store = configureStore({
   reducer: {
@@ -24,6 +25,7 @@ export const store = configureStore({
     coupons: couponsReducer,
     orders: ordersReducer,
     profile: profileReducer,
+    chat: chatReducer,
   },
 });
 

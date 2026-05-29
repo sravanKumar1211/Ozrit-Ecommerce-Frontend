@@ -9,6 +9,7 @@ import {
   FiAward,
   FiGitCommit,
   FiUser,
+  FiMessageSquare,
 } from "react-icons/fi";
 
 const navigation = [
@@ -20,6 +21,7 @@ const navigation = [
   { name: "Orders", to: "/orders", icon: FiShoppingCart },
   { name: "Customers", to: "/customers", icon: FiUsers },
   { name: "Coupons", to: "/coupons", icon: FiTag },
+  { name: "Chat", to: "/chat", icon: FiMessageSquare },
   { name: "Profile", to: "/profile", icon: FiUser },
 ];
 
