@@ -6,7 +6,7 @@ This repository contains the two dynamic front-end applications that drive the O
 
 ## 🚀 Deployed Links
 - **User UI Website:** [https://ozrit-shop.vercel.app](https://ozrit-shop.vercel.app)
-- **Admin Dashboard URL:** [https://ozrit-admin.vercel.app/login](https://ozrit-admin.vercel.app/login)
+- **Admin Dashboard URL:** [https://ozrit-admin.vercel.app](https://ozrit-admin.vercel.app)
 - **Backend API URL:** [https://ozrit-ecommerce-backend.onrender.com](https://ozrit-ecommerce-backend.onrender.com)
 
 ---
