@@ -8,9 +8,10 @@ export const initializeAdminSocket = () => {
   const token = localStorage.getItem("adminToken");
   if (!token) return null;
 
-  const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+  const socketUrl = import.meta.env.VITE_SOCKET_URL || apiBaseUrl.replace(/\/api\/?$/, "").replace(/\/$/, "");
 
-  socket = io(import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_BASE_URL || "http://localhost:5000", {
+  socket = io(socketUrl, {
     auth: {
       token,
     },
